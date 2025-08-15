@@ -1,4 +1,4 @@
-# LEO CLI
+# LEO LANGUAGE EXPLAINED
 
 ### Links
 https://docs.leo-lang.org/cli/overview
