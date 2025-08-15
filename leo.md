@@ -54,7 +54,9 @@ The network still sees that a proof was submitted and that some program was exec
 If your program outputs any public state (like updating a public counter or minting a public token), that part is visible.
 
 ### Record
-A self-contained `state object` on the blockchain that has an owner. It lives in Aleo's global state tree. When a record is consumed, it is spent or disolved, and that usually results in creating new records as outputs.
+A record defines a type schema for a piece of sthat that could be stored on-chain. It is a self-contained `state object` on the blockchain that has an owner. It lives in Aleo's global state tree. When a record is consumed, it is spent or disolved, and that usually results in creating new records as outputs.
 
 ### Transaction
 A transaction is a function that takes in records as inputs, applies some logic, and produces new records or public outputs. Each transiction muist be a self-contained state transformation - it's similar to ACID (atomic, consistant, isolated, and durable). But blockchains are not "rolled back" so cryptographic proofs enofce ACID before a validator even sees the transaction. 
+
+Only records are consumed by transitions. If a transition is passed in primative inputs, they are not consumed.
