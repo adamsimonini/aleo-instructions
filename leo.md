@@ -17,6 +17,20 @@ Side effects are recorded on the Aleo ledger after proof verification.
 In JavaScript, your function is just code running on a CPU, and the CPU can handle whatever.
 In Leo, your transition is a mathematical proof generator, so it’s constrained to what the zk-SNARK proving system can encode and verify. That’s what I meant by rules of the circuit.
 
+In the following transition exmaple, `owner` and `amount` are primative values that aren't consumed by the transition, just like input parameters in "normal" functions. They do not persist past the transitions execution, and technically records don't either. However, the source of a primative input value can exist past the transition's execution.
+
+`birdge_auth` and `total_supply` on the other hand are records, which are first-class objects in Aleo that are consumed by transitions.
+```bash
+    transition mint(
+        public owner: address,
+        public amount: u64,
+        bridge_auth: BridgeAuth,
+        total_supply: TotalSupply,
+    ) -> (balance.aleo/Balance, TotalSupply) {
+        # transition function logic 
+    }
+```
+
 ## Step-by-step reality of an Aleo transaction
 
 Local execution & proof generation
@@ -57,6 +71,13 @@ If your program outputs any public state (like updating a public counter or mint
 A record defines a type schema for a piece of sthat that could be stored on-chain. It is a self-contained `state object` on the blockchain that has an owner. It lives in Aleo's global state tree. When a record is consumed, it is spent or disolved, and that usually results in creating new records as outputs.
 
 ### Transaction
+A transition in Aleo is the unit of execution that actually runs on-chain (or provably off-chain, then verified on-chain). Only within a transition are you producing or consuming records and generating a zero-knowledge proof that enforces correctness.
+
 A transaction is a function that takes in records as inputs, applies some logic, and produces new records or public outputs. Each transiction muist be a self-contained state transformation - it's similar to ACID (atomic, consistant, isolated, and durable). But blockchains are not "rolled back" so cryptographic proofs enofce ACID before a validator even sees the transaction. 
 
 Only records are consumed by transitions. If a transition is passed in primative inputs, they are not consumed.
+
+### Assert
+Assert encodes a constraint into the zero-knowledge proof circuit for that transition.
+
+Assert takes a boolean condition, and either evaluates `true` or `false`. Assert is only meaningful within a transition. If true, execution of the transition continues. If false, the entire transition aborts, and the transaction fails.
